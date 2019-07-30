@@ -1,3 +1,11 @@
+# importing "OrderBy" fields from prisma.
+# ==> we literally use all of graphql's "orderby" Enum without modification
+# In this case, we can import the fields directly from graphql.prisma
+
+# When we need to grab multiple fieds from other files...
+# " import UserOrderByInput, somethingelse, something from './generated/prisma.graphql';"
+# import UserOrderByInput, PostOrderByInput, CommentOrderByInput   from './generated/prisma.graphql';
+
 type Query {
     # Pagination!!
     # first and second (built-in arg from prisma) 
@@ -20,15 +28,17 @@ type Query {
     # }
     # Keep in mind that when "skip" is higher than a number of data
     #   it returns an empty array, not an error.
-    users(query: String, first: Int, skip: Int, after: String): [User!]!
+
+    # orderBy: UserOrderByInput ===> Enum from graphql.prisma
+    users(query: String, first: Int, skip: Int, after: String, orderBy: UserOrderByInput): [User!]!
 
     # Without Pagination
     # users(query: String): [User!]!
 
-    posts(query: String, first: Int, skip: Int, after: String): [Post!]!
+    posts(query: String, first: Int, skip: Int, after: String, orderBy: PostOrderByInput): [Post!]!
     # posts(query: String): [Post!]!
-    myPosts(query: String, first: Int, skip: Int, after: String): [Post!]!
-    comments (first: Int, skip: Int, after: String): [Comment!]!  
+    myPosts(query: String, first: Int, skip: Int, after: String, orderBy: PostOrderByInput ): [Post!]!
+    comments (first: Int, skip: Int, after: String, orderBy: CommentOrderByInput ): [Comment!]!  
     me: User!
     post(id: ID!): Post!
 }
@@ -83,6 +93,8 @@ type Post {
     published: Boolean
     author: User!
     comments: [Comment!]!
+    updatedAt: String!
+    createdAt: String!
 }
 
 type Comment {
@@ -90,6 +102,8 @@ type Comment {
     text: String!
     author: User!
     post: Post!
+    updatedAt: String!
+    createdAt: String!
 }
 
 input createUserInput {
